@@ -7,8 +7,10 @@ how it behaves there. This is the checklist for the first run on a real GBC. `ex
 screen for each section.
 
 Run it on **each** GBC you support: 6.00.09 or 6.00.07 (jsface and `modulum`), and a GBC where
-those are removed (the 6.00.04 tree). Build the customization with `gbc build --vite`, deploy it,
-and start the examples (see "Examples" in the README). Keep the browser console open.
+those are removed (the 6.00.04 tree). `make gas` in `examples/` builds the customization with
+`gbc build --vite` and serves the examples with a standalone `httpdispatch` (see "Examples" in
+the README): once per GBC project, each with its own `GASPORT`. Or deploy the customization
+yourself and start the examples on your own GAS. Keep the browser console open.
 
 ## A. Both generations, once
 

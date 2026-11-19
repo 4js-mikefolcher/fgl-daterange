@@ -13,3 +13,5 @@ First packaged release.
   `DISPLAY ARRAY` and `INPUT ARRAY`, with its fglunit tests and 28 functional tests
   (4js-fgltest, driving the application through GGC: `make uitest`).
 - 23 fglunit tests of the helper (`make test`).
+- `make gas` in `examples/`: builds the widget into a GBC project and serves the examples with a
+  standalone `httpdispatch`, to try the widget in a browser (`DateRangeDemo.xcf`).

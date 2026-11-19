@@ -6,6 +6,9 @@
 #   make examples   build the example application (see examples/Makefile)
 #   make uitest     functional tests of the examples through GGC (4js-fgltest; needs Java and
 #                   a GGC, see examples/Makefile for GGCDIR)
+#   make gas        build the widget into a GBC and serve the examples with a standalone
+#                   httpdispatch, to try it in a browser (see examples/Makefile for GBCPROJECT,
+#                   GASDIR and GASPORT); make gas-stop stops it
 #   make check      fglpkg lint and fglpkg pack --list: what the package would contain
 #   make clean
 #
@@ -21,7 +24,7 @@ SUITES := TestDateRangeHelper
 
 export FGLLDPATH := $(CURDIR):$(CURDIR)/$(BUILD)$(if $(FGLLDPATH),:$(FGLLDPATH))
 
-.PHONY: all test uitest examples check clean
+.PHONY: all test uitest gas gas-stop examples check clean
 
 all: $(MODULES:%=$(LIBDIR)/%.42m)
 
@@ -44,6 +47,12 @@ examples: all
 
 uitest: all
 	$(MAKE) -C examples uitest
+
+gas: all
+	$(MAKE) -C examples gas
+
+gas-stop:
+	$(MAKE) -C examples gas-stop
 
 check: all
 	fglpkg lint

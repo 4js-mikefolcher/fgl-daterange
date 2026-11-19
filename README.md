@@ -361,10 +361,29 @@ runs the application on an empty SQLite file in `bin/uitest/run`, so it never to
 `examples/daterangedemo.db`. Reports and logs are in `bin/uitest/out`. The widget itself is not
 involved: that is [TESTING.md](TESTING.md).
 
-Run it through a GAS with a GBC built with the widget (`<GBC>acme</GBC>` in the application
-`.xcf`, or `?gbc=acme` in the URL), with `examples/bin` on `FGLLDPATH` and `FGLRESOURCEPATH`,
-`FGLPROFILE` set to `examples/fglprofile`, and the application's directory set to `examples/`
-(the database file is there). `ui.Interface.loadStyles("DateRangeDemo")` loads
+To try the widget in a browser, `make gas` builds it into a GBC and serves the examples with a
+standalone `httpdispatch`:
+
+```
+cd examples
+make gas GBCPROJECT=/path/to/gbc-project GASDIR=/path/to/gas   # then open http://localhost:6395/ua/r/DateRangeDemo
+make gas-stop
+```
+
+- `GBCPROJECT` is a GBC project directory (the source tree with `customization/sample`; `gbc` and
+  Node must work there). The Makefile copies the widget into `customization/fgldaterange` (set
+  `GBCNAME` for another name; it never replaces a customization it did not make) and runs
+  `gbc build --vite`. Run it once per GBC generation you want to test, each on its own port:
+  `make gas GBCPROJECT=<6.00.04 tree> GASPORT=6397`.
+- `GASDIR` is the Genero Application Server directory (`FGLASDIR`, when that is set). The
+  dispatcher gets its own appdata (`examples/bin/gas/<port>`) and ports (`GASPORT`, default 6395,
+  and the next one), and runs the examples with the Genero in `FGLDIR`, so a GAS of your own is
+  not touched.
+- It is for development only: `httpdispatch` listens on every interface and ignores access
+  control. `make gas-stop` stops it, and so does `make clean`.
+
+To use the examples on a GAS of your own instead, copy `DateRangeDemo.xcf`: its header lists the
+two paths to set and the `<GBC>` to select. `ui.Interface.loadStyles("DateRangeDemo")` loads
 `DateRangeDemo.4st`, the styles of the widget.
 
 ## Developing
@@ -376,6 +395,7 @@ fglpkg install       # once: fglunit (examples/ also needs 4js-fgltest: fglpkg i
 make test            # 23 fglunit tests of the helper
 make examples        # build the example application
 make uitest          # 28 functional tests of the examples through GGC, needs Java and a GGC
+make gas             # build the widget into a GBC and serve the examples, to try it in a browser
 make check           # fglpkg lint and fglpkg pack --list
 ```
 
