@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968"?>
+<!--
+  Styles of the date range widget (gbc/js/daterange/DateRangeWidget.js in the GBC customization).
+  Copy these Style elements into the application's own .4st. In the .per, give each
+  date range field that a dialog edits the SCROLL attribute: the JSON value is longer than
+  the field, and without SCROLL the runtime cuts it to the field width.
+
+  customWidget      dateRange turns an EDIT (or a LABEL) into the date range widget.
+  dateRangeFormat   display format, as moment.js tokens (YYYY, MM, DD, ...).
+                    Default: the short numeric date of the GBC language (MM/DD/YYYY in en-US).
+  dateRangePresets  "no" hides the predefined ranges (Today, Last 7 days, ...).
+-->
+<StyleList>
+  <Style name="Edit.dateRange">
+    <StyleAttribute name="customWidget" value="dateRange" />
+  </Style>
+  <Style name="Label.dateRange">
+    <StyleAttribute name="customWidget" value="dateRange" />
+  </Style>
+  <Style name="Edit.dateRangeIso">
+    <StyleAttribute name="customWidget" value="dateRange" />
+    <StyleAttribute name="dateRangeFormat" value="YYYY-MM-DD" />
+    <StyleAttribute name="dateRangePresets" value="no" />
+  </Style>
+</StyleList>
