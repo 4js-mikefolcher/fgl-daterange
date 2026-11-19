@@ -137,7 +137,7 @@ the program as typed, and BDL rejects it.
 | 4ST attribute      | Effect                                                                 |
 | ------------------ | ---------------------------------------------------------------------- |
 | `customWidget`     | `dateRange` turns an EDIT, or a LABEL, into the widget                 |
-| `dateRangeFormat`  | display format in moment.js tokens (`DD/MM/YYYY`, `YYYY-MM-DD`, ...). Default: the short numeric date of the GBC language (`MM/DD/YYYY` in en-US, `DD/MM/YYYY` in fr-FR). Set it to match `DBDATE`; in a CONSTRUCT it must |
+| `dateRangeFormat`  | display format in moment.js tokens (`DD/MM/YYYY`, `YYYY-MM-DD`, ...). Default: the short numeric date of the GBC language (`MM/DD/YYYY` in en-US, `DD/MM/YYYY` in fr-FR). **Every CONSTRUCT field must set it** to the `DBDATE` format of the program, see below |
 | `dateRangePresets` | `no` hides the predefined ranges (Today, Yesterday, Last 7 days, Last 30 days, This month, Last month) |
 
 ### Where it works
@@ -155,7 +155,24 @@ criteria for a `DATE`, so the widget sends the range in the runtime's own syntax
 `date1:date2`, in the display format, and the program never reads JSON:
 
 - The field shows `11/01/2026 - 11/30/2026`, and sends `11/01/2026:11/30/2026`. The display
-  format must match the `DBDATE` of the program (`MM/DD/YYYY` for `MDY4/`): set `dateRangeFormat`.
+  format must match the `DBDATE` of the program (`MM/DD/YYYY` for `MDY4/`), so **every CONSTRUCT
+  field needs a style that sets `dateRangeFormat`** (`dateRangeConstruct` in
+  `examples/DateRangeDemo.4st`). Without it the format follows the language of the browser, and a
+  user whose language differs from `DBDATE` sends the wrong dates: with a French browser and
+  `DBDATE=MDY4/`, `05/11/2026 - 20/11/2026` becomes `05/11/2026:20/11/2026`, which the runtime
+  reads as month 5 day 11 to month 20. The library cannot correct that: the runtime parses what
+  the user typed in a `DATE` field itself, before any BDL code runs.
+
+  ```xml
+  <Style name="Edit.dateRangeConstruct">
+    <StyleAttribute name="customWidget" value="dateRange" />
+    <StyleAttribute name="dateRangeFormat" value="MM/DD/YYYY" />
+  </Style>
+  ```
+
+  ```
+  EDIT cSearchDate = FORMONLY.searchDate TYPE DATE, STYLE = "dateRangeConstruct";
+  ```
 - Anything the user types that is not a `start - end` range reaches the runtime exactly as typed:
   `>=11/01/2026`, `*`, a single date, a `date1:date2` range, `|` lists. The runtime itself accepts
   `date1:date2` (also with spaces around the colon), a single date and comparisons, and refuses
@@ -261,7 +278,8 @@ a dynamic `import()`.
   range.
 - `DATEEDIT` is not covered, in a CONSTRUCT either: only an EDIT takes the style.
 - Not tested with a ButtonEdit.
-- In a CONSTRUCT the display format must match `DBDATE`, and the field must be wide enough for the
+- In a CONSTRUCT the display format must match `DBDATE` and is not detected: pin it with
+  `dateRangeFormat` in the style of every CONSTRUCT field. The field must be wide enough for the
   `date1:date2` text.
 - The predefined ranges are computed when a field first opens its popup. A form left open past
   midnight keeps the previous day's "Today" until it is reopened.
@@ -355,8 +373,11 @@ through GGC, the Genero Ghost Client, so there is no browser, and checks what th
 to the front end and what it takes back: the whole JSON value in every field and column, the
 `INPUT` and `INPUT ARRAY` rules, the `CONSTRUCT` criteria the runtime accepts, and the ones it
 refuses (`d1 - d2`, ISO dates, open ranges), which is why the widget never sends them. It needs
-Java and a GGC. Recent Genero installs have one in `testing_utilities/ggc`, which is the default;
-otherwise `make uitest GGCDIR=/path/to/ggc`, a path without a space. It sets `DBDATE=MDY4/` and
+Java and a GGC. `GGCDIR` defaults to `testing_utilities/ggc` of the Genero install, but not every
+install has one (the Genero 6.00.03 tree used to develop this does not). Then point it at one
+that exists, for example the `testing_utilities/ggc` of the `fgl` directory that Genero Studio
+bundles, copied to a path without a space: `make uitest GGCDIR=/path/to/ggc`. The Makefile stops
+with "GGC not found" when `ggc.jar` is missing. It sets `DBDATE=MDY4/` and
 runs the application on an empty SQLite file in `bin/uitest/run`, so it never touches
 `examples/daterangedemo.db`. Reports and logs are in `bin/uitest/out`. The widget itself is not
 involved: that is [TESTING.md](TESTING.md).

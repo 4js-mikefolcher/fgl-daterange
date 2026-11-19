@@ -27,6 +27,8 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
   const FORMAT_STYLE_ATTRIBUTE = "dateRangeFormat";
   /** 4ST style attribute: "no" hides the predefined ranges (Today, Last 7 days, ...) */
   const PRESETS_STYLE_ATTRIBUTE = "dateRangePresets";
+  /** Invisible direction marks (LRM, RLM, ALM, embeddings and isolates) that Intl puts around separators */
+  const DIRECTION_MARKS = /[؜‎‏‪-‮⁦-⁩]/g;
 
   /** Data members of the widgets, on the prototype: GBC base constructors call methods that read them */
   const DEFAULTS = {
@@ -623,6 +625,11 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
       /**
        * Builds a moment.js format from the short numeric date of a language: en-US gives
        * MM/DD/YYYY, fr-FR gives DD/MM/YYYY, ...
+       *
+       * Only what a user types is kept: the invisible direction marks that some languages put
+       * around the separators (ar-SA) are dropped, and so are the literals before the first and
+       * after the last number (the " г." of bg-BG). With them, plain digits such as
+       * 05.11.2026 - 20.11.2026 would not be read as a date.
        * @param {string} language
        * @returns {string} moment.js format
        * @private
@@ -633,8 +640,23 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
             new Date(2026, 10, 30)
           );
           const tokens = { year: "YYYY", month: "MM", day: "DD" };
-          // Literal parts are escaped, moment.js would read their letters as tokens
-          return parts.map((part) => tokens[part.type] ?? `[${part.value}]`).join("");
+          const isNumber = (part) => part.type in tokens;
+          const first = parts.findIndex(isNumber);
+          const last = parts.map(isNumber).lastIndexOf(true);
+          if (first < 0) {
+            return "MM/DD/YYYY";
+          }
+          return parts
+            .slice(first, last + 1)
+            .map((part) => {
+              if (isNumber(part)) {
+                return tokens[part.type];
+              }
+              // Literal parts are escaped, moment.js would read their letters as tokens
+              const text = part.value.replace(DIRECTION_MARKS, "");
+              return text ? `[${text}]` : "";
+            })
+            .join("");
         } catch (e) {
           return "MM/DD/YYYY";
         }

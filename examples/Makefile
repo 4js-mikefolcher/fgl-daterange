@@ -9,8 +9,9 @@
 #   make uitest runs the 4js-fgltest functional suite, which drives the application through
 #               GGC (4js-fgltest is a dev dependency too). It needs Java and a GGC:
 #                  make uitest [GGCDIR=/path/to/testing_utilities/ggc] [UIPORT=6517]
-#               GGC is in testing_utilities/ggc of recent Genero installs and is found there
-#               by default. Use a GGC whose path has no space.
+#               GGCDIR defaults to testing_utilities/ggc of the Genero install, which not every
+#               install has: point GGCDIR at one that exists (the fgl directory that Genero
+#               Studio bundles has one). Use a GGC whose path has no space.
 #   make gas    builds the widget into a GBC and starts a standalone httpdispatch that serves
 #               the examples, to try the widget in a browser. It needs a GBC project (the
 #               source tree with customization/sample, where the `gbc` tool and Node work):
@@ -164,6 +165,8 @@ gas: all
 	fi
 
 gas-start:
+	@echo "WARNING: httpdispatch listens on all interfaces (*:$(GASPORT)) and has no authentication."
+	@echo "         Development only: run it on a trusted network, and stop it when you are done."
 	rm -rf $(GASRUN)
 	mkdir -p $(GASRUN)/gbc
 	for d in app services session tmp log public gbc_deployment; do mkdir -p $(GASRUN)/appdata/$$d; done

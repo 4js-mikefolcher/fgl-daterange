@@ -24,6 +24,9 @@ yourself and start the examples on your own GAS. Keep the browser console open.
 - [ ] The JSON value shows as `11/01/2026 - 11/30/2026` (the second field as `2026-11-01 - ...`,
   without predefined ranges).
 - [ ] Typing a range, one date, `1/5/2026 - 1/20/2026` and `next week` behave as in the README.
+- [ ] Optional, a field without `dateRangeFormat` and the browser language `bg-BG` or `ar-SA`: the
+  default format is `DD.MM.YYYY` or `DD/MM/YYYY`, and typing `05.11.2026 - 20.11.2026` (or with
+  `/` for `ar-SA`) is read as a range.
 - [ ] The popup opens on click and on Alt+Down. Enter applies, Escape closes without cancelling
   the dialog, Tab applies and moves on.
 - [ ] Ctrl+Z, Ctrl+X, Ctrl+V and a right-click Copy never put JSON in the field or on the
@@ -35,7 +38,11 @@ yourself and start the examples on your own GAS. Keep the browser console open.
 
 - [ ] The search field is the date range widget, with the calendar icon. In the DOM its class is
   `gbc_DateRangeConstructWidget`.
-- [ ] `dateRangeFormat` equals the program's `DBDATE` (the default `MDY4/` is `MM/DD/YYYY`).
+- [ ] The field uses the `dateRangeConstruct` style, and its `dateRangeFormat` equals the program's
+  `DBDATE` (the default `MDY4/` is `MM/DD/YYYY`).
+- [ ] With the browser language set to one that writes the day first (fr-FR, de-DE), the field
+  still shows and sends `MM/DD/YYYY`: the same range gives the same `BETWEEN` as in en-US. (The
+  format is pinned by the style, not taken from the language.)
 - [ ] Pick a range: the field shows `start - end`. Accept: the "Generated condition" field shows a
   `BETWEEN` on `orders.orderdate`, and the table shows the orders in the range.
 - [ ] Type `11/01/2026 - 11/30/2026` and tab away: the same result.

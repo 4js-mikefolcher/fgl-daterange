@@ -14,4 +14,10 @@ First packaged release.
   (4js-fgltest, driving the application through GGC: `make uitest`).
 - 23 fglunit tests of the helper (`make test`).
 - `make gas` in `examples/`: builds the widget into a GBC project and serves the examples with a
-  standalone `httpdispatch`, to try the widget in a browser (`DateRangeDemo.xcf`).
+  standalone `httpdispatch`, to try the widget in a browser (`DateRangeDemo.xcf`). It prints a
+  warning: the dispatcher listens on every interface and has no authentication.
+- CONSTRUCT fields take a style that pins `dateRangeFormat` to `DBDATE`
+  (`Edit.dateRangeConstruct` in `DateRangeDemo.4st`, used by `ConstructDemo.per`). The default
+  format follows the browser language, which sent wrong dates when it differed from `DBDATE`.
+- The default format drops the direction marks (`ar-SA`) and the trailing literal (`bg-BG`) that
+  `Intl` adds, so typed digits are read as a date in those languages.

@@ -35,8 +35,10 @@ END
 
 ATTRIBUTES
   # A CONSTRUCT field is bound to the DATE it searches. The range is entered or picked as
-  # start - end in the display format (dateRangeFormat), which must match DBDATE.
-  EDIT     cSearchDate     = FORMONLY.searchDate     TYPE DATE, STYLE = "dateRange",
+  # start - end in the display format. The runtime reads the criteria in the DBDATE format,
+  # so the style dateRangeConstruct pins dateRangeFormat to it (MM/DD/YYYY for MDY4/), and
+  # does not leave it to the language of the browser.
+  EDIT     cSearchDate     = FORMONLY.searchDate     TYPE DATE, STYLE = "dateRangeConstruct",
               COMMENT = "Pick a range, or type it as start - end";
   EDIT     cSearchCustomer = FORMONLY.searchCustomer TYPE VARCHAR;
   EDIT     cWhereText      = FORMONLY.whereText      TYPE VARCHAR, NOENTRY, SCROLL;
