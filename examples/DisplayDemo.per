@@ -1,0 +1,35 @@
+LAYOUT (TEXT = "Display")
+  VBOX
+    GROUP (TEXT = "Month browser")
+      GRID
+      {
+       Month (EDIT)   [cMonthPeriod               ]
+       Month (LABEL)  [cMonthLabel                ]
+      }
+      END
+    END
+    GROUP (TEXT = "Predefined periods")
+      GRID
+      {
+       Last 30 days   [cLast30Period              ]
+       This quarter   [cQuarterPeriod             ]
+       This year      [cYearPeriod                ]
+      }
+      END
+    END
+  END
+END
+
+ATTRIBUTES
+  # These fields are only displayed, and the runtime does not cut the value of a field that no
+  # dialog edits. SCROLL is not needed here, and kept so the form works if a dialog edits one.
+  EDIT  cMonthPeriod   = FORMONLY.monthPeriod   TYPE VARCHAR, STYLE = "dateRange", NOENTRY, SCROLL;
+  LABEL cMonthLabel    = FORMONLY.monthLabel,   STYLE = "dateRange";
+  EDIT  cLast30Period  = FORMONLY.last30Period  TYPE VARCHAR, STYLE = "dateRange", NOENTRY, SCROLL;
+  EDIT  cQuarterPeriod = FORMONLY.quarterPeriod TYPE VARCHAR, STYLE = "dateRange", NOENTRY, SCROLL;
+  EDIT  cYearPeriod    = FORMONLY.yearPeriod    TYPE VARCHAR, STYLE = "dateRange", NOENTRY, SCROLL;
+END
+
+INSTRUCTIONS
+  SCREEN RECORD srPeriods(monthPeriod, monthLabel, last30Period, quarterPeriod, yearPeriod);
+END

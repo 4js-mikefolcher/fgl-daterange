@@ -1,0 +1,25 @@
+{
+  "name": "fgldaterange",
+  "version": "0.1.0",
+  "description": "Date range field for Genero BDL applications in the Genero Browser Client: a GBC widget and a BDL helper for its JSON value",
+  "author": "mifo@4js.com",
+  "license": "MIT",
+  "repository": "https://github.com/4js-mikefolcher/fgl-daterange",
+  "keywords": ["date", "daterange", "gbc", "widget", "customization"],
+  "genero": ">=6.0.0",
+  "files": [
+    "com/**/*.42m",
+    "gbc/**"
+  ],
+  "docs": [
+    "README.md",
+    "GBC-SETUP.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "fgl": {
+      "fglunit": "1.0.1"
+    }
+  }
+}

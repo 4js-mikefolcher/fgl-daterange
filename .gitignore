@@ -155,3 +155,14 @@ vite.config.ts.timestamp-*
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
+
+# Genero build output and installed fglpkg packages
+build/
+examples/bin/
+examples/*.db
+.fglpkg/
+*.42m
+*.42f
+*.42x
+*.42r
+*.42s

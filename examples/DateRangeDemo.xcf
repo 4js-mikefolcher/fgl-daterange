@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The date range examples (MainController) as a GAS application: run in place from this checkout.
+  `make gas` in examples/ starts a standalone httpdispatch with this file and the two resources
+  below; URL: http://localhost:<port>/ua/r/DateRangeDemo
+
+  To use it on your own GAS, copy it to the application directory, replace the two resources with
+  the paths of this checkout, and select a GBC built with the widget (see GBC-SETUP.md):
+     res.daterange.examples   this directory (examples/), built with `make`
+     res.daterange.library    the top of the repository, where com/fourjs/fgldaterange is compiled
+  Add  <UA_OUTPUT><GBC>your-customization</GBC></UA_OUTPUT>  to select the GBC. The Genero
+  version is the one of the GAS (res.fgldir): it must be the one that compiled the examples.
+-->
+<APPLICATION Parent="defaultwa"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.4js.com/ns/gas/6.00/cfextwa.xsd">
+  <EXECUTION>
+    <!-- the examples' compiled modules, and the library -->
+    <ENVIRONMENT_VARIABLE Id="FGLLDPATH" Concat="PREPEND">$(res.daterange.examples)/bin:$(res.daterange.library)</ENVIRONMENT_VARIABLE>
+    <!-- the forms (.42f) and DateRangeDemo.4st -->
+    <ENVIRONMENT_VARIABLE Id="FGLRESOURCEPATH">$(res.daterange.examples)/bin</ENVIRONMENT_VARIABLE>
+    <!-- the demo SQLite file daterangedemo.db is in the working directory (PATH) -->
+    <ENVIRONMENT_VARIABLE Id="FGLPROFILE">$(res.daterange.examples)/fglprofile</ENVIRONMENT_VARIABLE>
+    <!-- the widget's default format and the CONSTRUCT criteria are mm/dd/yyyy -->
+    <ENVIRONMENT_VARIABLE Id="DBDATE">MDY4/</ENVIRONMENT_VARIABLE>
+    <PATH>$(res.daterange.examples)</PATH>
+    <MODULE>bin/MainController.42m</MODULE>
+  </EXECUTION>
+</APPLICATION>

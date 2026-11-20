@@ -1,0 +1,202 @@
+/*
+ * Date range widget (DateRangeWidget.js) and its daterangepicker popup.
+ *
+ * Imported from the customization's sass/customization.scss:
+ *   @import "../js/daterange/DateRangeWidget";
+ * It must be compiled there, with the customization's theme: GBC exposes its theme values only
+ * as Sass variables.
+ *
+ * The library stylesheet is inlined as is (Sass imports a plain .css file given without its
+ * extension), then themed below with GBC variables, so the popup follows the theme: primary
+ * colour, dark, high contrast, and the font size ratio of each theme. Every rule below adds the
+ * .gbc_DateRangePicker class, so it outweighs the library rule it replaces.
+ */
+
+@import "../../vendor/daterange/daterangepicker";
+
+$drp-hover-color: rgba($ui-text-icon-color, 0.08);
+
+/* The field: the stock Edit look, plus a calendar icon after the input */
+.gbc_DateRangeWidget {
+  cursor: default;
+
+  > .gbc_EditWidget__input {
+    flex: 1 1 auto;
+  }
+
+  > .gbc_DateRangeWidget__icon {
+    flex: 0 0 auto;
+    align-self: center;
+    padding: 0 $gbc-space-xxs;
+    color: $ui-text-icon-color-faded;
+    // The click goes to the field itself, which opens the picker
+    pointer-events: none;
+  }
+
+  &.disabled > .gbc_DateRangeWidget__icon {
+    color: $ui-text-icon-color-disabled;
+  }
+}
+
+/* A LABEL with the dateRange style, or a display-only cell of a table: the formatted range as plain
+   text, not a field */
+.gbc_DateRangeWidget.gbc_DateRangeLabelWidget {
+  &,
+  &.disabled,
+  &.readonly {
+    border-color: transparent;
+    background-color: transparent;
+    box-shadow: none;
+    cursor: inherit;
+  }
+
+  > .gbc_EditWidget__input {
+    color: $ui-text-icon-color;
+    // A range wider than its column is cut with an ellipsis, as the text of a label is
+    text-overflow: ellipsis;
+  }
+
+  // In a table the row sets the text colour: current and selected rows, VM colours
+  &.gbc_isInTable > .gbc_EditWidget__input {
+    color: inherit;
+  }
+
+  > .gbc_DateRangeWidget__icon {
+    display: none;
+  }
+}
+
+/* The popup */
+.daterangepicker.gbc_DateRangePicker {
+  // Level of the GBC dropdowns: above modal windows, below GBC messages
+  z-index: $z-index-DropDown;
+  width: $ui-font-size-ratio * 278px;
+  font-family: inherit;
+  font-size: $ui-font-size-ratio * 1em;
+  line-height: normal;
+  color: $ui-text-icon-color;
+  background-color: $gbc-DropDownWidget-background-color;
+  border-color: $ui-border-color;
+
+  &::before {
+    border-bottom-color: $ui-border-color;
+  }
+
+  &::after {
+    border-bottom-color: $gbc-DropDownWidget-background-color;
+  }
+
+  &.drop-up::before {
+    border-top-color: $ui-border-color;
+  }
+
+  &.drop-up::after {
+    border-top-color: $gbc-DropDownWidget-background-color;
+  }
+
+  .drp-calendar {
+    max-width: $ui-font-size-ratio * 270px;
+  }
+
+  .calendar-table {
+    background-color: transparent;
+    border-color: transparent;
+
+    th,
+    td {
+      min-width: $ui-font-size-ratio * 32px;
+      width: $ui-font-size-ratio * 32px;
+      height: $ui-font-size-ratio * 24px;
+      line-height: $ui-font-size-ratio * 24px;
+      font-size: 0.85em;
+    }
+
+    .next span,
+    .prev span {
+      border-color: $ui-text-icon-color;
+    }
+  }
+
+  td.available:hover,
+  th.available:hover {
+    background-color: $drp-hover-color;
+  }
+
+  td.week,
+  th.week,
+  td.off,
+  td.off.in-range,
+  td.off.start-date,
+  td.off.end-date,
+  td.disabled,
+  option.disabled {
+    background-color: transparent;
+    color: $ui-text-icon-color-disabled;
+  }
+
+  td.in-range {
+    background-color: $ui-primary-color-faded;
+    color: $ui-text-icon-color;
+  }
+
+  td.active,
+  td.active:hover {
+    background-color: $ui-primary-color;
+    color: $ui-on-primary-color;
+  }
+
+  select.monthselect,
+  select.yearselect {
+    font-family: inherit;
+    font-size: 0.85em;
+    color: $ui-text-icon-color;
+    background-color: $ui-field-color;
+    border: 1px solid $ui-border-color;
+    border-radius: $gbc-radius-s;
+  }
+
+  &.show-ranges.ltr .drp-calendar.left,
+  &.show-ranges.rtl .drp-calendar.right,
+  &.show-ranges.single.ltr .drp-calendar.left,
+  &.show-ranges.single.rtl .drp-calendar.left {
+    border-color: $ui-border-color;
+  }
+
+  .ranges li {
+    font-size: 0.85em;
+
+    &:hover {
+      background-color: $drp-hover-color;
+    }
+
+    &.active {
+      background-color: $ui-primary-color;
+      color: $ui-on-primary-color;
+    }
+  }
+
+  @media (min-width: 564px) {
+    width: auto;
+
+    .ranges ul {
+      width: $ui-font-size-ratio * 140px;
+    }
+  }
+
+  .drp-buttons {
+    border-top-color: $ui-border-color;
+    line-height: normal;
+
+    .mt-button {
+      margin-left: $gbc-space-xs;
+      font-size: 0.85em;
+      // The container aligns right, and the buttons would inherit it
+      text-align: center;
+    }
+  }
+
+  .drp-selected {
+    font-size: 0.85em;
+    color: $ui-text-icon-color-faded;
+  }
+}

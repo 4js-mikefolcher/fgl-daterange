@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968"?>
+<!--
+  Styles of the date range widget (gbc/js/daterange/DateRangeWidget.js in the GBC customization).
+  Copy these Style elements into the application's own .4st. In the .per, give each
+  date range field that a dialog edits the SCROLL attribute: the JSON value is longer than
+  the field, and without SCROLL the runtime cuts it to the field width.
+
+  customWidget      dateRange turns an EDIT (or a LABEL) into the date range widget.
+  dateRangeFormat   display format, as moment.js tokens (YYYY, MM, DD, ...).
+                    Default: the short numeric date of the GBC language (MM/DD/YYYY in en-US).
+  dateRangePresets  "no" hides the predefined ranges (Today, Last 7 days, ...).
+
+  A CONSTRUCT field needs its own style, with dateRangeFormat set to the DBDATE format of the
+  program (dateRangeConstruct below, for DBDATE=MDY4/). The runtime reads the criteria of a
+  CONSTRUCT in the DBDATE format, so the default, which follows the language of the browser,
+  sends the wrong dates to a user whose language differs from DBDATE: with a French browser
+  and DBDATE=MDY4/, 05/11/2026 - 20/11/2026 would be read as month 5 day 11 and month 20.
+  Change the value together with DBDATE, for example DD/MM/YYYY for DBDATE=DMY4/.
+-->
+<StyleList>
+  <Style name="Edit.dateRange">
+    <StyleAttribute name="customWidget" value="dateRange" />
+  </Style>
+  <Style name="Label.dateRange">
+    <StyleAttribute name="customWidget" value="dateRange" />
+  </Style>
+  <Style name="Edit.dateRangeIso">
+    <StyleAttribute name="customWidget" value="dateRange" />
+    <StyleAttribute name="dateRangeFormat" value="YYYY-MM-DD" />
+    <StyleAttribute name="dateRangePresets" value="no" />
+  </Style>
+  <Style name="Edit.dateRangeConstruct">
+    <StyleAttribute name="customWidget" value="dateRange" />
+    <StyleAttribute name="dateRangeFormat" value="MM/DD/YYYY" />
+  </Style>
+</StyleList>

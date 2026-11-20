@@ -1,0 +1,16 @@
+{
+  "_comment": "Run with `make uitest` in examples/. Paths are relative to this file. FGLTEST_PORT overrides the port.",
+  "port": 6517,
+  "reporters": "console,junit,json",
+  "outdir": "../bin/uitest/out",
+  "timeout": 180,
+  "suites": [
+    {
+      "name": "TestExamplesUi",
+      "module": "../bin/TestExamplesUi",
+      "mode": "tcp",
+      "workdir": "../bin/uitest/run",
+      "commandLine": "fglrun ../../MainController.42m"
+    }
+  ]
+}

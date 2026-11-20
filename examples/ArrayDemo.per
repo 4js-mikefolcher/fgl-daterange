@@ -1,0 +1,30 @@
+LAYOUT (TEXT = "Campaigns")
+  VBOX
+    TABLE
+    {
+      Campaign                  Period                     Days
+     [cCampaignName            |cPeriod                   |cDays  ]
+     [cCampaignName            |cPeriod                   |cDays  ]
+     [cCampaignName            |cPeriod                   |cDays  ]
+     [cCampaignName            |cPeriod                   |cDays  ]
+     [cCampaignName            |cPeriod                   |cDays  ]
+     [cCampaignName            |cPeriod                   |cDays  ]
+     [cCampaignName            |cPeriod                   |cDays  ]
+     [cCampaignName            |cPeriod                   |cDays  ]
+    }
+    END
+  END
+END
+
+ATTRIBUTES
+  EDIT cCampaignName = FORMONLY.campaignName TYPE VARCHAR;
+  # SCROLL is required for INPUT ARRAY: the JSON value (49 characters) is longer than the
+  # column, and without SCROLL the runtime cuts the value to the column width. DISPLAY ARRAY
+  # does not cut it.
+  EDIT cPeriod       = FORMONLY.period       TYPE VARCHAR, STYLE = "dateRange", SCROLL;
+  EDIT cDays         = FORMONLY.days         TYPE INTEGER, NOENTRY;
+END
+
+INSTRUCTIONS
+  SCREEN RECORD srCampaigns(campaignName, period, days);
+END

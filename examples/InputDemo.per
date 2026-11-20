@@ -1,0 +1,43 @@
+LAYOUT (TEXT = "Input")
+  VBOX
+    GROUP (TEXT = "Periods")
+      GRID
+      {
+       Report period  [cReportPeriod               ]
+       Compare with   [cComparePeriod              ]
+      }
+      END
+    END
+    GROUP (TEXT = "As BDL reads them")
+      GRID
+      {
+                       From           To             Days
+       Report period  [cReportStart ][cReportEnd   ][cReportDays ]
+       Compare with   [cCompareStart][cCompareEnd  ][cCompareDays]
+       Report JSON    [cReportJson                                        ]
+       Compare JSON   [cCompareJson                                       ]
+       Report label   [cReportLabel                ]
+      }
+      END
+    END
+  END
+END
+
+ATTRIBUTES
+  # SCROLL is required on a field that a dialog edits: the JSON value (49 characters) is
+  # longer than the field, and without SCROLL the runtime cuts the value to the field width
+  # and refuses typed text beyond it.
+  EDIT     cReportPeriod  = FORMONLY.reportPeriod  TYPE VARCHAR, STYLE = "dateRange", SCROLL,
+              COMMENT = "Pick a range, or type it as start - end";
+  EDIT     cComparePeriod = FORMONLY.comparePeriod TYPE VARCHAR, STYLE = "dateRangeIso", SCROLL,
+              COMMENT = "Optional. ISO dates, no predefined ranges";
+  DATEEDIT cReportStart   = FORMONLY.reportStart   TYPE DATE,    NOENTRY;
+  DATEEDIT cReportEnd     = FORMONLY.reportEnd     TYPE DATE,    NOENTRY;
+  EDIT     cReportDays    = FORMONLY.reportDays    TYPE INTEGER, NOENTRY;
+  DATEEDIT cCompareStart  = FORMONLY.compareStart  TYPE DATE,    NOENTRY;
+  DATEEDIT cCompareEnd    = FORMONLY.compareEnd    TYPE DATE,    NOENTRY;
+  EDIT     cCompareDays   = FORMONLY.compareDays   TYPE INTEGER, NOENTRY;
+  EDIT     cReportJson    = FORMONLY.reportJson    TYPE VARCHAR, NOENTRY;
+  EDIT     cCompareJson   = FORMONLY.compareJson   TYPE VARCHAR, NOENTRY;
+  LABEL    cReportLabel   = FORMONLY.reportLabel,  STYLE = "dateRange";
+END

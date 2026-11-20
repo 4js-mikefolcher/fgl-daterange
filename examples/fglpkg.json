@@ -1,0 +1,12 @@
+{
+  "name": "fgldaterange-examples",
+  "version": "0.1.0",
+  "description": "Examples of the fgldaterange date range field: INPUT, CONSTRUCT, DISPLAY, DISPLAY ARRAY and INPUT ARRAY",
+  "license": "MIT",
+  "devDependencies": {
+    "fgl": {
+      "fglunit": "1.0.1",
+      "4js-fgltest": "1.1.2"
+    }
+  }
+}

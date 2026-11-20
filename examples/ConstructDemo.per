@@ -1,0 +1,54 @@
+LAYOUT (TEXT = "Construct")
+  VBOX
+    GROUP (TEXT = "Search")
+      GRID
+      {
+       Order date  [cSearchDate               ]
+       Customer    [cSearchCustomer           ]
+      }
+      END
+    END
+    GROUP (TEXT = "Generated condition")
+      GRID
+      {
+       [cWhereText                                          ]
+      }
+      END
+    END
+    GROUP (TEXT = "Orders")
+      TABLE
+      {
+        Id     Customer             Order date   Amount
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+       [cId   |cCustomer           |cOrderDate |cAmount      ]
+      }
+      END
+    END
+  END
+END
+
+ATTRIBUTES
+  # A CONSTRUCT field is bound to the DATE it searches. The range is entered or picked as
+  # start - end in the display format. The runtime reads the criteria in the DBDATE format,
+  # so the style dateRangeConstruct pins dateRangeFormat to it (MM/DD/YYYY for MDY4/), and
+  # does not leave it to the language of the browser.
+  EDIT     cSearchDate     = FORMONLY.searchDate     TYPE DATE, STYLE = "dateRangeConstruct",
+              COMMENT = "Pick a range, or type it as start - end";
+  EDIT     cSearchCustomer = FORMONLY.searchCustomer TYPE VARCHAR;
+  EDIT     cWhereText      = FORMONLY.whereText      TYPE VARCHAR, NOENTRY, SCROLL;
+  EDIT     cId             = FORMONLY.orderId        TYPE INTEGER;
+  EDIT     cCustomer       = FORMONLY.customer       TYPE VARCHAR;
+  DATEEDIT cOrderDate      = FORMONLY.orderDate      TYPE DATE;
+  EDIT     cAmount         = FORMONLY.amount         TYPE DECIMAL(10, 2);
+END
+
+INSTRUCTIONS
+  SCREEN RECORD srSearch(searchDate, searchCustomer);
+  SCREEN RECORD srOrders(orderId, customer, orderDate, amount);
+END

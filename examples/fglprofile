@@ -1,0 +1,9 @@
+# FGLPROFILE of the date range examples.
+#   export FGLPROFILE=$PWD/fglprofile
+# The demo database is a SQLite file in the current directory. The driver (dbmsqt_3) opens
+# it but does not create it: `make` creates an empty file, and the CONSTRUCT example creates
+# and fills its table. Run from the directory that holds the file.
+dbi.database.daterangedemo.source               = "daterangedemo.db"
+dbi.database.daterangedemo.driver               = "dbmsqt_3"
+dbi.database.daterangedemo.ifxemul.datatype.char    = true
+dbi.database.daterangedemo.ifxemul.datatype.varchar = true
