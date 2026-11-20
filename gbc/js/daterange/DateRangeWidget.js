@@ -28,7 +28,7 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
   /** 4ST style attribute: "no" hides the predefined ranges (Today, Last 7 days, ...) */
   const PRESETS_STYLE_ATTRIBUTE = "dateRangePresets";
   /** Invisible direction marks (LRM, RLM, ALM, embeddings and isolates) that Intl puts around separators */
-  const DIRECTION_MARKS = /[؜‎‏‪-‮⁦-⁩]/g;
+  const DIRECTION_MARKS = /[\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/g;
 
   /** Data members of the widgets, on the prototype: GBC base constructors call methods that read them */
   const DEFAULTS = {
@@ -487,18 +487,26 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
 
       /**
        * Strict parsing, so "11/012026" is not read as a date, but the display format also
-       * accepts one-digit months and days ("1/5/2026" for MM/DD/YYYY), and the ISO format
+       * accepts one-digit months and days ("1/5/2026" for MM/DD/YYYY), and the ISO format.
+       * When the format comes from the GBC language, the full format of that language is
+       * accepted too, with the literals the display leaves out ("05.11.2026 г." in bg-BG). A
+       * format that a style sets is the only one: another language's order of day and month
+       * could read an ambiguous date the wrong way.
        * @param {string} text one date
        * @returns {?Object} moment of the day, null when the text is not a date
        * @private
        */
       _parseDate(text) {
         if (!this._dateFormats) {
-          const format = this._getRangeFormat();
-          const shortFormat = format.replace(/(^|[^M])MM(?!M)/, "$1M").replace(/(^|[^D])DD(?!D)/, "$1D");
-          this._dateFormats = [format, shortFormat, ISO_FORMAT];
+          const formats = [this._getRangeFormat()];
+          if (!this._getStyleAttribute(FORMAT_STYLE_ATTRIBUTE)) {
+            formats.push(this._getLocaleFormat(this._getLanguage(), true));
+          }
+          const shorten = (format) => format.replace(/(^|[^M])MM(?!M)/, "$1M").replace(/(^|[^D])DD(?!D)/, "$1D");
+          this._dateFormats = [...new Set([...formats, ...formats.map(shorten), ISO_FORMAT])];
         }
-        const date = moment(text, this._dateFormats, true);
+        // A no-break space, typed or pasted, is read as a space (one for one: the text stays strict)
+        const date = moment(text.replace(/\s/g, " "), this._dateFormats, true);
         return date.isValid() ? date.startOf("day") : null;
       },
 
@@ -551,10 +559,21 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
        */
       _getRangeFormat() {
         if (!this._rangeFormat) {
-          this._rangeFormat = this._getStyleAttribute(FORMAT_STYLE_ATTRIBUTE) || this._getLocaleFormat(this._getLanguage());
+          const pinned = this._getStyleAttribute(FORMAT_STYLE_ATTRIBUTE);
+          if (!pinned) {
+            this._onLocaleFormat();
+          }
+          this._rangeFormat = pinned || this._getLocaleFormat(this._getLanguage());
         }
         return this._rangeFormat;
       },
+
+      /**
+       * Called once, when the format comes from the GBC language because the style has no
+       * dateRangeFormat. Nothing to say here, a CONSTRUCT has to.
+       * @private
+       */
+      _onLocaleFormat() {},
 
       /**
        * @returns {boolean} false when the dateRangePresets 4ST attribute says no
@@ -626,15 +645,17 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
        * Builds a moment.js format from the short numeric date of a language: en-US gives
        * MM/DD/YYYY, fr-FR gives DD/MM/YYYY, ...
        *
-       * Only what a user types is kept: the invisible direction marks that some languages put
-       * around the separators (ar-SA) are dropped, and so are the literals before the first and
-       * after the last number (the " г." of bg-BG). With them, plain digits such as
-       * 05.11.2026 - 20.11.2026 would not be read as a date.
+       * The invisible direction marks that some languages put around the separators (ar-SA) are
+       * always dropped. The literals before the first and after the last number (the " г." of
+       * bg-BG, the final dot of ko-KR) are dropped too, unless withEdges is set: the displayed
+       * date is shorter and plain digits such as 05.11.2026 - 20.11.2026 are read as a date, and
+       * the full format is only one more format that is accepted when typed.
        * @param {string} language
+       * @param {boolean} [withEdges=false] true to keep the literals before and after the date
        * @returns {string} moment.js format
        * @private
        */
-      _getLocaleFormat(language) {
+      _getLocaleFormat(language, withEdges = false) {
         try {
           const parts = new Intl.DateTimeFormat(language, { year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(
             new Date(2026, 10, 30)
@@ -646,14 +667,14 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
           if (first < 0) {
             return "MM/DD/YYYY";
           }
-          return parts
-            .slice(first, last + 1)
+          return (withEdges ? parts : parts.slice(first, last + 1))
             .map((part) => {
               if (isNumber(part)) {
                 return tokens[part.type];
               }
-              // Literal parts are escaped, moment.js would read their letters as tokens
-              const text = part.value.replace(DIRECTION_MARKS, "");
+              // Literal parts are escaped, moment.js would read their letters as tokens. A no-break
+              // space (the one before the " г." of bg-BG) becomes the space that a user types.
+              const text = part.value.replace(DIRECTION_MARKS, "").replace(/\s/g, " ");
               return text ? `[${text}]` : "";
             })
             .join("");
@@ -738,6 +759,20 @@ whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory
       _initElement() {
         base._initElement.call(this);
         this.addClasses("gbc_DateRangeWidget");
+      },
+
+      /**
+       * The runtime reads the criteria in the DBDATE format, and the GBC cannot know it: a format
+       * that follows the language of the browser is only right for the users whose language
+       * writes dates as DBDATE does. Said once per field, in the console of the developer.
+       * @inheritDoc
+       */
+      _onLocaleFormat() {
+        console.warn(
+          "DateRangeConstructWidget: the style of this CONSTRUCT field has no dateRangeFormat, so the date format " +
+            "follows the browser language. Set dateRangeFormat to the DBDATE format of the program " +
+            "(MM/DD/YYYY for MDY4/), or users with another language send the wrong dates."
+        );
       },
 
       /**

@@ -26,7 +26,9 @@ yourself and start the examples on your own GAS. Keep the browser console open.
 - [ ] Typing a range, one date, `1/5/2026 - 1/20/2026` and `next week` behave as in the README.
 - [ ] Optional, a field without `dateRangeFormat` and the browser language `bg-BG` or `ar-SA`: the
   default format is `DD.MM.YYYY` or `DD/MM/YYYY`, and typing `05.11.2026 - 20.11.2026` (or with
-  `/` for `ar-SA`) is read as a range.
+  `/` for `ar-SA`) is read as a range. In `bg-BG`, `05.11.2026 г. - 20.11.2026 г.` is read too,
+  and in `ko-KR` the native `2026. 11. 05. - 2026. 11. 20.` (the field itself shows the date
+  without the trailing literal).
 - [ ] The popup opens on click and on Alt+Down. Enter applies, Escape closes without cancelling
   the dialog, Tab applies and moves on.
 - [ ] Ctrl+Z, Ctrl+X, Ctrl+V and a right-click Copy never put JSON in the field or on the
@@ -39,7 +41,9 @@ yourself and start the examples on your own GAS. Keep the browser console open.
 - [ ] The search field is the date range widget, with the calendar icon. In the DOM its class is
   `gbc_DateRangeConstructWidget`.
 - [ ] The field uses the `dateRangeConstruct` style, and its `dateRangeFormat` equals the program's
-  `DBDATE` (the default `MDY4/` is `MM/DD/YYYY`).
+  `DBDATE` (the default `MDY4/` is `MM/DD/YYYY`). The console shows no
+  "no dateRangeFormat" warning. (Take `dateRangeFormat` out of the style once: the warning
+  appears, once for the field.)
 - [ ] With the browser language set to one that writes the day first (fr-FR, de-DE), the field
   still shows and sends `MM/DD/YYYY`: the same range gives the same `BETWEEN` as in en-US. (The
   format is pinned by the style, not taken from the language.)

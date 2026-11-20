@@ -161,7 +161,9 @@ criteria for a `DATE`, so the widget sends the range in the runtime's own syntax
   user whose language differs from `DBDATE` sends the wrong dates: with a French browser and
   `DBDATE=MDY4/`, `05/11/2026 - 20/11/2026` becomes `05/11/2026:20/11/2026`, which the runtime
   reads as month 5 day 11 to month 20. The library cannot correct that: the runtime parses what
-  the user typed in a `DATE` field itself, before any BDL code runs.
+  the user typed in a `DATE` field itself, before any BDL code runs. The widget does not detect
+  the missing attribute, but it says so: a CONSTRUCT field whose style has no `dateRangeFormat`
+  writes a warning to the browser console, once per field.
 
   ```xml
   <Style name="Edit.dateRangeConstruct">
@@ -198,6 +200,10 @@ CONSTRUCT whereText ON orders.orderdate, orders.customer FROM searchDate, search
   dialog), and Tab applies and moves on. Typing updates the calendar.
 - **Typing.** `start - end` in the display format (a dash or an en dash with spaces around it),
   one-digit months and days accepted (`1/5/2026 - 1/20/2026`), or one date for a one-day range.
+  When the format comes from the GBC language (no `dateRangeFormat`), the language's full short
+  date is also accepted, with the text around the numbers that the field leaves out: `05.11.2026 г.`
+  in `bg-BG`, `2026. 11. 05.` in `ko-KR`. A format that a style sets is the only one, so another
+  language's order of day and month never reads an ambiguous date the wrong way.
 - **To the program.** A range picked in the popup is sent at once, as a choice in a completer
   is. Typed text is sent when the focus leaves, like any EDIT, which is also when `ON CHANGE`
   fires.

@@ -20,4 +20,7 @@ First packaged release.
   (`Edit.dateRangeConstruct` in `DateRangeDemo.4st`, used by `ConstructDemo.per`). The default
   format follows the browser language, which sent wrong dates when it differed from `DBDATE`.
 - The default format drops the direction marks (`ar-SA`) and the trailing literal (`bg-BG`) that
-  `Intl` adds, so typed digits are read as a date in those languages.
+  `Intl` adds, so typed digits are read as a date in those languages. The full format of the
+  language, with those literals, is also accepted when typed (`05.11.2026 г.`, `2026. 11. 05.`),
+  and a no-break space in it is read as a space. A format set by a style stays the only one.
+- A CONSTRUCT field whose style has no `dateRangeFormat` writes a warning to the browser console.
