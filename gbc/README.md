@@ -13,7 +13,7 @@ fglpkg package `fgldaterange`. Both come from
 [fgl-daterange](https://github.com/4js-mikefolcher/fgl-daterange), whose README describes the
 widget in full.
 
-Needs a GBC 6 project built with Vite (`gbc build --vite`). Tested with GBC 6.00.09.
+Needs a GBC 6 project built with Vite (`gbc build --vite`). Tested with GBC 6.00.09 and 6.00.10.
 
 ## Install it in a customization
 
@@ -29,15 +29,21 @@ The examples use a customization `customization/acme` of a GBC project.
    Artifactory credentials go in your own `~/.npmrc` (the "Set Me Up" page of the `gbc-packages`
    repository gives the line), never in the customization.
 
-2. Install the package in the customization folder:
+2. Give the customization its own `package.json`, then install the package there. Without one,
+   npm uses the `package.json` of the GBC project and adds the package to GBC's own
+   dependencies. A minimal one is enough:
+
+   ```json
+   { "name": "acme", "private": true }
+   ```
 
    ```
    cd customization/acme
    npm install @fourjs/gbc-daterange
    ```
 
-   This creates `package.json` and `package-lock.json` in the customization. Commit them with it,
-   but not `node_modules`.
+   npm adds the package to that `package.json` and writes a `package-lock.json` next to it.
+   Commit both with the customization, but not `node_modules`.
 
 3. Import the widget from any `.js` file in the customization's `js/` folder, for example a new
    `js/Packages.js`:
@@ -55,11 +61,11 @@ The examples use a customization `customization/acme` of a GBC project.
    It has to be compiled there, with the customization's theme: the popup takes its colours and
    sizes from the theme.
 
-5. Build from the GBC project root. A fresh checkout needs both installs:
+5. Build from the GBC project root. A fresh copy of the project needs both installs:
 
    ```
-   npm ci                                  # GBC's own dependencies
-   npm ci --prefix customization/acme      # the customization's packages
+   npm install                             # GBC's own dependencies (GBC ships no package-lock.json)
+   npm ci --prefix customization/acme      # the customization's packages, from its package-lock.json
    gbc build --customization customization/acme --vite
    ```
 
