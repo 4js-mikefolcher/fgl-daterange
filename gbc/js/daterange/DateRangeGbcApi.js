@@ -69,7 +69,8 @@ export function whenGbcReady(moduleName, dependencies, body) {
  * @param {Object} definition
  * @param {string} definition.name class name, also the name of its CSS class (gbc_<name>)
  * @param {Function} definition.parent the class it extends
- * @param {string} [definition.templateName] name of the .tpl.html template, the class name by default
+ * @param {string} [definition.templateName] name of a template registered with TemplateService, the
+ *   class name by default
  * @param {Object} [definition.defaults] data members and their default values
  * @param {function(Object): Object} definition.members the functions of the class, given the
  * prototype of the parent. A member named _postConstruct(opts) runs after the parent constructor.

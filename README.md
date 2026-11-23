@@ -69,12 +69,13 @@ cp -R <package>/gbc/vendor/daterange <gbc-project>/customization/acme/vendor/
 gbc build --customization customization/acme --vite
 ```
 
-Nothing else: the build picks up every `.js` and `.tpl.html` under `js/`, the libraries need no
-npm install in the customization, and the texts need no entry in its locale files. The
-stylesheet has to be imported because GBC exposes its theme values only as Sass variables, so
-the popup is compiled with the customization's own theme. moment.js is not vendored: the widget
-uses the copy every GBC 6 project already has in its `node_modules` (installed by `npm ci` at
-the project root, which any GBC build needs).
+Nothing else: the build picks up every `.js` under `js/` (the widget registers its template,
+`DateRangeWidget.template.html`, itself), the libraries need no npm install in the
+customization, and the texts need no entry in its locale files. The stylesheet has to be
+imported because GBC exposes its theme values only as Sass variables, so the popup is compiled
+with the customization's own theme. moment.js is not vendored: the widget uses the copy every
+GBC 6 project already has in its `node_modules` (installed by `npm install` at the project root,
+which any GBC build needs).
 
 The two folders keep their relative place because the code refers to the libraries as
 `../../vendor/daterange`. The libraries must stay outside `js/`: the build imports every `.js`
@@ -234,8 +235,9 @@ CONSTRUCT whereText ON orders.orderdate, orders.customer FROM searchDate, search
 
 ### Files
 
-- `gbc/js/daterange/DateRangeWidget.js` and `.tpl.html`: `DateRangeWidget` (extends `EditWidget`,
-  registered on `Edit[customWidget=dateRange]`), `DateRangeConstructWidget` (extends
+- `gbc/js/daterange/DateRangeWidget.js` and `.template.html` (the template, which the widget
+  registers at startup, so that it also works from `node_modules`): `DateRangeWidget` (extends
+  `EditWidget`, registered on `Edit[customWidget=dateRange]`), `DateRangeConstructWidget` (extends
   `DummyEditWidget`, on `DummyEdit[customWidget=dateRange]`) and `DateRangeLabelWidget` (on
   `Label[customWidget=dateRange]`). The value stack and `_oldValue` keep the VM form, and only the
   `<input>` holds the readable text, so change detection compares like with like.

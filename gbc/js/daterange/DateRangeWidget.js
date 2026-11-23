@@ -1,8 +1,9 @@
 "use strict";
 
-// Drop-in date range widget for a GBC 6 customization built with Vite (gbc build --vite). To add
-// it to a customization: copy js/daterange/ and vendor/daterange/ into it, and add to its
-// sass/customization.scss:  @import "../js/daterange/DateRangeWidget";
+// Date range widget for a GBC 6 customization built with Vite (gbc build --vite). To add it to a
+// customization, either install the npm package @fourjs/gbc-daterange (see gbc/README.md), or copy
+// js/daterange/ and vendor/daterange/ into it and add to its sass/customization.scss:
+//   @import "../js/daterange/DateRangeWidget";
 //
 // The same files work in the official GBC 6.00.07 and 6.00.09 (jsface classes, modulum modules) and
 // in a GBC with native ES6 classes: DateRangeGbcApi.js is the only code that knows the difference.
@@ -13,8 +14,14 @@ import moment from "moment";
 import { defineWidget, whenGbcReady } from "./DateRangeGbcApi.js";
 import { loadDateRangePicker } from "./DateRangePickerLoader.js";
 import { I18N_PREFIX, TEXTS } from "./DateRangeTexts.js";
+import template from "./DateRangeWidget.template.html?raw";
 
-whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory"], function (context, cls) {
+whenGbcReady("DateRangeWidget", ["EditWidget", "DummyEditWidget", "WidgetFactory", "TemplateService"], function (context, cls) {
+  // The template is registered here, not found by the build: the build collects the .tpl.html files
+  // of the customization's js/ folder only, and this file may be in node_modules (npm package).
+  // Comments are removed, as the build does for the templates it collects.
+  context.TemplateService.registerRawTemplate("DateRangeWidget", template.replace(/<!--[\s\S]*?-->/g, "").trim());
+
   /** Date format of the value exchanged with the VM, the one util.JSON reads and writes for DATE */
   const ISO_FORMAT = "YYYY-MM-DD";
   /** Separator between the two dates in the displayed text */
