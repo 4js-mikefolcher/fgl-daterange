@@ -1,0 +1,26 @@
+{
+  "name": "@fourjs/gbc-daterange",
+  "version": "0.1.0",
+  "description": "Date range widget for a Genero Browser Client (GBC 6) customization built with Vite: one field, a daterangepicker popup, a JSON value",
+  "keywords": ["genero", "gbc", "gbc-customization", "widget", "daterange", "daterangepicker"],
+  "author": "mifo@4js.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4js-mikefolcher/fgl-daterange.git",
+    "directory": "gbc"
+  },
+  "type": "module",
+  "main": "index.js",
+  "sass": "js/daterange/DateRangeWidget.scss",
+  "files": ["index.js", "js/", "vendor/"],
+  "peerDependencies": {
+    "moment": ">=2.29.0"
+  },
+  "peerDependenciesMeta": {
+    "moment": { "optional": true }
+  },
+  "publishConfig": {
+    "registry": "https://fourjs.jfrog.io/artifactory/api/npm/gbc-packages/"
+  }
+}
